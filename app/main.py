@@ -10,10 +10,14 @@ from pathlib import Path
 
 app = FastAPI()
 
-# Enable CORS
+# Enable CORS with specific origins
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # In production, replace with specific origins
+    allow_origins=[
+        "http://localhost:8001",
+        "http://localhost:3000",
+        "https://mongo-deskfront.vercel.app",  # Your frontend domain
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -27,7 +31,7 @@ app.mount("/static", StaticFiles(directory=str(frontend_dir)), name="static")
 
 @app.get("/")
 async def read_root():
-    return FileResponse(str(frontend_dir / "index.html"))
+    return {"status": "API is running"}
 
 class GenerateRequest(BaseModel):
     transcript: str
